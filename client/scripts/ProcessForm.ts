@@ -15,6 +15,7 @@ nicht kopiert und auch nicht diktiert.
 
 namespace A06_studiVZ {
     window.addEventListener("load", init);
+    
     let address: string = "https://studi-vz.herokuapp.com/";
 
     let inputs: NodeListOf<HTMLInputElement> = document.getElementsByTagName("input");
