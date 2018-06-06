@@ -14,7 +14,7 @@ nicht kopiert und auch nicht diktiert.
 var A06_studiVZ;
 (function (A06_studiVZ) {
     window.addEventListener("load", init);
-    let address = "https://steflaur.herokuapp.com/";
+    let address = "https://studi-vz.herokuapp.com/";
     let inputs = document.getElementsByTagName("input");
     function init(_event) {
         console.log("#call init");
