@@ -1,1 +1,2 @@
-# EIA2-Node-StudiVZ
+# EIA2 StudiVZ Node
+Server Side Node Code

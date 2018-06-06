@@ -1,0 +1,20 @@
+* {
+	display: block;
+	vertical-align: top;
+	padding: 3px;
+	font-family: arial, sans-serif;
+}
+
+head {
+	display: none;
+}
+
+
+input[type="radio"], label {
+	display: inline;
+	
+}
+
+button {
+	margin:1em 0em;
+}
