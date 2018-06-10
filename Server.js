@@ -6,6 +6,7 @@
 "use strict";
 const Http = require("http");
 const Url = require("url");
+const Database = require("./Database");
 console.log("Server starting");
 let port = process.env.PORT;
 if (port == undefined)
@@ -19,69 +20,41 @@ function handleListen() {
     console.log("Listening on port: " + port);
 }
 function handleRequest(_request, _response) {
-    console.log("Ich höre Stimmen!");
+    console.log("Request received");
     let query = Url.parse(_request.url, true).query;
-    console.log(query["command"]);
-    if (query["command"]) {
-        switch (query["command"]) {
-            case "insert":
-                insert(query, _response);
-                break;
-            case "refresh":
-                refresh(_response);
-                break;
-            case "search":
-                search(query, _response);
-                break;
-            default:
-                error();
-        }
+    var command = query["command"];
+    switch (command) {
+        case "insert":
+            let student = {
+                name: query["name"],
+                firstname: query["firstname"],
+                studies: query["studies"],
+                matrikel: parseInt(query["matrikel"]),
+                age: parseInt(query["age"])
+            };
+            Database.insert(student);
+            respond(_response, "storing data");
+            break;
+        case "refresh":
+            Database.refresh(function (json) {
+                respond(_response, json);
+            });
+            break;
+        case "search":
+            let matrikel = { matrikel: parseInt(query["matrikel"]) };
+            Database.search(matrikel, function (json) {
+                respond(_response, json);
+            });
+            break;
+        default:
+            respond(_response, "unknown command: " + command);
+            break;
     }
+}
+function respond(_response, _text) {
+    _response.setHeader("Access-Control-Allow-Origin", "*");
+    _response.setHeader("content-type", "text/html; charset=utf-8");
+    _response.write(_text);
     _response.end();
-}
-function insert(query, _response) {
-    let obj = JSON.parse(query["data"]);
-    let _name = obj.name;
-    let _firstname = obj.firstname;
-    let matrikel = obj.matrikel.toString();
-    let _age = obj.age;
-    let _gender = obj.gender;
-    let _studies = obj.studies;
-    let student;
-    student = {
-        name: _name,
-        firstname: _firstname,
-        matrikel: parseInt(matrikel),
-        age: _age,
-        gender: _gender,
-        studies: _studies
-    };
-    studentHomoAssoc[matrikel] = student;
-    _response.write("Daten empfangen");
-}
-function refresh(_response) {
-    console.log(studentHomoAssoc);
-    for (let matrikel in studentHomoAssoc) {
-        let student = studentHomoAssoc[matrikel];
-        let line = matrikel + ": ";
-        line += student.studies + ", " + student.name + ", " + student.firstname + ", " + student.age + " Jahre ";
-        line += student.gender ? "(M)" : "(F)";
-        _response.write(line + "\n");
-    }
-}
-function search(query, _response) {
-    let student = studentHomoAssoc[query["searchFor"]];
-    if (student) {
-        let line = query["searchFor"] + ": ";
-        line += student.studies + ", " + student.name + ", " + student.firstname + ", " + student.age + " Jahre ";
-        line += student.gender ? "(M)" : "(F)";
-        _response.write(line);
-    }
-    else {
-        _response.write("No Match");
-    }
-}
-function error() {
-    alert("Error");
 }
 //# sourceMappingURL=Server.js.map

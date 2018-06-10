@@ -1,0 +1,75 @@
+<!-- /* 
+Aufgabe 08: StudiVZ
+Name: Laura Vogt
+Matrikel: 256056
+Datum: 10.Jun18
+
+Hiermit versichere ich, dass ich diesen
+Code selbst geschrieben habe. Er wurde
+nicht kopiert und auch nicht diktiert. 
+
+*vorgegebenen Code aus A06 übernommen und angepasst
+
+*/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>DatabaseClient</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/studiVZ.css" type="text/css"
+	media="screen" />
+<script src="scripts/client.js" type="text/javascript" charset="utf-8"></script>
+<script src="scripts/interface.ts" type="text/javascript"
+	charset="utf-8"></script>
+</head>
+
+<body>
+	<form action="https://studi-vz.herokuapp.com/" method="get"></form>
+	<fieldset id="input">
+		<legend> type student data here </legend>
+
+		<input type="text" name="name" placeholder="name" size="23" /> <input
+			type="text" name="firstname" placeholder="firstname" size="23" /> <input
+			type="text" name="matrikel" placeholder="matrikel" />
+
+		<!-- selectbox -->
+		<select name="Select" id="select">
+			<optgroup label="Bachelor"></optgroup>
+			<option value="MKB">Medienkonzeption</option>
+			<option value="OMB">OnlineMedien</option>
+			<option value="MIB">Medieninformatik</option>
+			<optgroup label="Master"></optgroup>
+			<option value="DIM">Design Interaktiver Medien</option>
+			<option value="MIM">Medieninformatik</option>
+			<option value="MD">Musikdesign</option>
+			<option value="MUM">MusicDesign</option>
+		</select> <input type="number" name="age" placeholder="age" min="18" max="99" />
+
+		<!--	<input type="radio" name="gender" value="male" id="male" /> <label
+			for="male">male</label> <input type="radio" name="gender"
+			value="female" id="female" /> <label for="female">female</label> 
+			-->
+
+		<button type="button" id="insertButt">insert to database</button>
+	</fieldset>
+
+	<fieldset id="output">
+		<legend> all student data </legend>
+
+		<button type="button" id="refreshButt">refresh</button>
+		<textarea rows="20" cols="90"> </textarea>
+	</fieldset>
+
+	<fieldset id="search">
+		<legend>search in database</legend>
+
+		<input type="search" id="mySearch" placeholder="search matrikel..."
+			size="30">
+		<button type="button" id="searchButt">search</button>
+		<textarea rows="5" cols="90"> </textarea>
+	</fieldset>
+
+</body>
+</html>
