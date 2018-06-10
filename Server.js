@@ -1,11 +1,11 @@
 /**
  * Simple server managing between client and database
  * @author: Jirka Dell'Oro-Friedl
+ * modified: Laura Vogt
  */
 "use strict";
 const Http = require("http");
 const Url = require("url");
-const Database = require("./Database");
 console.log("Server starting");
 let port = process.env.PORT;
 if (port == undefined)
@@ -14,38 +14,74 @@ let server = Http.createServer();
 server.addListener("listening", handleListen);
 server.addListener("request", handleRequest);
 server.listen(port);
+let studentHomoAssoc = {};
 function handleListen() {
     console.log("Listening on port: " + port);
 }
 function handleRequest(_request, _response) {
-    console.log("Request received");
+    console.log("Ich höre Stimmen!");
     let query = Url.parse(_request.url, true).query;
-    var command = query["command"];
-    switch (command) {
-        case "insert":
-            let student = {
-                name: query["name"],
-                firstname: query["firstname"],
-                matrikel: parseInt(query["matrikel"])
-            };
-            Database.insert(student);
-            respond(_response, "storing data");
-            break;
-        case "refresh":
-            Database.findAll(function (json) {
-                respond(_response, json);
-            });
-            break;
-        default:
-            respond(_response, "unknown command: " + command);
-            break;
+    console.log(query["command"]);
+    if (query["command"]) {
+        switch (query["command"]) {
+            case "insert":
+                insert(query, _response);
+                break;
+            case "refresh":
+                refresh(_response);
+                break;
+            case "search":
+                search(query, _response);
+                break;
+            default:
+                error();
+        }
+    }
+    _response.end();
+}
+function insert(query, _response) {
+    let obj = JSON.parse(query["data"]);
+    let _name = obj.name;
+    let _firstname = obj.firstname;
+    let matrikel = obj.matrikel.toString();
+    let _age = obj.age;
+    let _gender = obj.gender;
+    let _studies = obj.studies;
+    let student;
+    student = {
+        name: _name,
+        firstname: _firstname,
+        matrikel: parseInt(matrikel),
+        age: _age,
+        gender: _gender,
+        studies: _studies
+    };
+    studentHomoAssoc[matrikel] = student;
+    _response.write("Daten empfangen");
+}
+function refresh(_response) {
+    console.log(studentHomoAssoc);
+    for (let matrikel in studentHomoAssoc) {
+        let student = studentHomoAssoc[matrikel];
+        let line = matrikel + ": ";
+        line += student.studies + ", " + student.name + ", " + student.firstname + ", " + student.age + " Jahre ";
+        line += student.gender ? "(M)" : "(F)";
+        _response.write(line + "\n");
     }
 }
-function respond(_response, _text) {
-    //console.log("Preparing response: " + _text);
-    _response.setHeader("Access-Control-Allow-Origin", "*");
-    _response.setHeader("content-type", "text/html; charset=utf-8");
-    _response.write(_text);
-    _response.end();
+function search(query, _response) {
+    let student = studentHomoAssoc[query["searchFor"]];
+    if (student) {
+        let line = query["searchFor"] + ": ";
+        line += student.studies + ", " + student.name + ", " + student.firstname + ", " + student.age + " Jahre ";
+        line += student.gender ? "(M)" : "(F)";
+        _response.write(line);
+    }
+    else {
+        _response.write("No Match");
+    }
+}
+function error() {
+    alert("Error");
 }
 //# sourceMappingURL=Server.js.map

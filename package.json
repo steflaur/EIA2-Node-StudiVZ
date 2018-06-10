@@ -1,8 +1,8 @@
 {
-	"name" : "Servertest",
+	"name" : "Aufgabe08",
 	"version" : "1.0.0",
-	"description" : "First Server Test",
-	"author" : "Jirka",
+	"description" : "StudiVZ",
+	"author" : "steflaur",
 	"main" : "Server.js",
 	"scripts" : {
 		"start" : "node Server.js"
@@ -11,6 +11,6 @@
 		"node" : "6.11.1"
 	},
 	"dependencies" : {
-		"mongodb": "^3.0.1"
+		"mongodb": "3.6.5"
 	}
 }

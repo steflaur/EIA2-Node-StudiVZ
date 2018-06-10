@@ -1,6 +1,7 @@
 /**
  * Simple server managing between client and database
  * @author: Jirka Dell'Oro-Friedl
+ * modified: Laura Vogt
  */
 
 import * as Http from "http";
@@ -18,7 +19,7 @@ server.addListener("listening", handleListen);
 server.addListener("request", handleRequest);
 server.listen(port);
 
-
+let studentHomoAssoc: Students = {};
 
 function handleListen(): void {
     console.log("Listening on port: " + port);
@@ -34,13 +35,22 @@ function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerRes
             let student: StudentData = {
                 name: query["name"],
                 firstname: query["firstname"],
-                matrikel: parseInt(query["matrikel"])
+                studies: query["studies"],
+                matrikel: parseInt(query["matrikel"]),
+                age: parseInt(query["age"])
+                //gender: genderButton.checked
             };
             Database.insert(student);
             respond(_response, "storing data");
             break;
         case "refresh":
-            Database.findAll(function(json: string): void {
+            Database.refresh(function(json: string): void {
+                respond(_response, json);
+            });
+            break;
+        case "search":
+            let matrikel = { matrikel: parseInt(query["matrikel"]) };
+            Database.search(matrikel, function(json: string): void {
                 respond(_response, json);
             });
             break;
@@ -51,7 +61,6 @@ function handleRequest(_request: Http.IncomingMessage, _response: Http.ServerRes
 }
 
 function respond(_response: Http.ServerResponse, _text: string): void {
-    //console.log("Preparing response: " + _text);
     _response.setHeader("Access-Control-Allow-Origin", "*");
     _response.setHeader("content-type", "text/html; charset=utf-8");
     _response.write(_text);

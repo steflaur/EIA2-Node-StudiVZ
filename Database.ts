@@ -1,11 +1,13 @@
 /**
  * Simple database insertion and query for MongoDB
  * @author: Jirka Dell'Oro-Friedl
+ * modified: Laura Vogt
  */
+
 import * as Mongo from "mongodb";
 console.log("Database starting");
 
-let databaseURL: string = "mongodb://localhost:27017";
+let databaseURL: string = "mongodb://stefdemo:test123@ds147420.mlab.com:47420/studi-vz";
 let databaseName: string = "Test";
 let db: Mongo.Db;
 let students: Mongo.Collection;
@@ -13,8 +15,9 @@ let students: Mongo.Collection;
 // wenn wir auf heroku sind...
 if (process.env.NODE_ENV == "production") {
     //    databaseURL = "mongodb://username:password@hostname:port/database";
-    databaseURL = "mongodb://testuser:testpassword@ds129532.mlab.com:29532/eia2";
-    databaseName = "eia2";
+    databaseURL = "mongodb://stefdemo:test123@ds147420.mlab.com:47420/studi-vz";
+    
+    databaseName = "studi-vz";
 }
 
 // handleConnect wird aufgerufen wenn der Versuch, die Connection zur Datenbank herzustellen, erfolgte
@@ -40,8 +43,20 @@ function handleInsert(_e: Mongo.MongoError): void {
 }
 
 
-export function findAll(_callback: Function): void {
+export function refresh(_callback: Function): void {
     var cursor: Mongo.Cursor = students.find();
+    cursor.toArray(prepareAnswer);
+
+    function prepareAnswer(_e: Mongo.MongoError, studentArray: StudentData[]): void {
+        if (_e)
+            _callback("Error" + _e);
+        else
+            _callback(JSON.stringify(studentArray));
+    }
+}
+
+export function search(_s: Object, _callback: Function): void {
+    var cursor: Mongo.Cursor = students.find(_s);
     cursor.toArray(prepareAnswer);
 
     function prepareAnswer(_e: Mongo.MongoError, studentArray: StudentData[]): void {
