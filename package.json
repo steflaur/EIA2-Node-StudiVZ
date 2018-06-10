@@ -5,7 +5,8 @@
 	"author" : "steflaur",
 	"main" : "Server.js",
 	"scripts" : {
-		"start" : "node Server.js"
+		"start" : "node Server.js",
+		"types" : "node Types.ts" 
 	},
 	"engines" : {
 		"node" : "6.11.1"
